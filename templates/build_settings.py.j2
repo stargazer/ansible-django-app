@@ -1,0 +1,6 @@
+# AUTOMATICALLY GENERATED
+{% for item in DJANGO_APP_SETTINGS %}
+{% for key, value in item.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+{% endfor %}

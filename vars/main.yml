@@ -1,0 +1,16 @@
+---
+# Global paths (common for all builds)
+paths_app: /home/{{ ansible_ssh_user }}/{{ app_name }}
+paths_latest_build: '{{ paths_app }}/latest_build'
+paths_virtualenv: '{{ paths_app }}/virtualenv'
+paths_log: '{{ paths_app }}/log'
+paths_builds: '{{ paths_app }}/builds'
+paths_src: '{{ paths_virtualenv }}/src'
+
+# Build-specific paths
+paths_new_build: '{{ paths_builds }}/{{ hash["stdout"] }}'
+paths_etc: '{{ paths_new_build }}/etc'
+paths_ssl: '{{ paths_etc }}/ssl'
+paths_cached_assets: '{{ paths_etc }}/assets/cached'
+paths_uncached_assets: '{{ paths_etc }}/assets/uncached'
+

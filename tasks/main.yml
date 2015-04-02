@@ -1,0 +1,51 @@
+---
+- name: Create global folder structure
+  file: path={{ item }}
+        state=directory
+  with_items:
+   - '{{ paths_app }}'
+   - '{{ paths_virtualenv }}'
+   - '{{ paths_log }}'
+   - '{{ paths_src }}'
+   - '{{ paths_builds }}'
+
+- name: Clone {{ repo }}
+  git: repo={{ repo }}
+       dest={{ paths_src }}/{{ app_name }}
+       version={{ branch }}
+       force=no
+       accept_hostkey=yes
+
+- name: Install application (based on its requirements.txt)
+  pip: requirements={{ paths_src }}/{{ app_name }}/requirements.txt
+       virtualenv={{ virtualenv_path }}
+       virtualenv_site_packages=no
+       chdir={{ paths_src }}/{{ app_name }}
+
+- name: Generate a hash to use for creating unique deploy folders and urls for the static assets
+  command: /bin/date +%d%m%Y-%s-%N
+  register: hash
+  
+- name: Create build-specific folders
+  file: path={{ item }} 
+        state=directory
+  with_items:
+   - '{{ paths_new_build }}'
+   - '{{ paths_etc }}'
+   - '{{ paths_ssl }}'
+   - '{{ paths_cached_assets }}'
+   - '{{ paths_uncached_assets }}'
+
+- name: Parse build_settings.py, based on the value of DJANGO_APP_SETTINGS, and place in {{ paths_etc }}/build_settings.py
+  template: src=build_settings.py.j2   
+            dest={{ paths_etc }}/build_settings.py
+
+- name: Create symlink {{ paths_latest_build }}, pointing to the {{ paths_new_build }} folder.
+  file: src='{{ paths_new_build }}'
+        dest='{{ paths_latest_build }}'
+        state=link
+
+# - name: Upload the SSL Certificate, SSL Certificate Chain file, and SSL Certificate Key file to the server. All 3 are defined in vars
+    
+
+#- name: Parse Apache file
