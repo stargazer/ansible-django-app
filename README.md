@@ -4,10 +4,11 @@ This Ansible role builds and deploys a Django application in a virtualenv, with 
 
 ### Role variables
 
-* ``app_name``:
-* ``repo``:    
-* ``branch``: 
-* ``domain``:
+* ``app_name``: Name of application, as it appears on its Github repo
+* ``repo``: Application's git url  
+* ``branch``: Application branch to install
+* ``settings``: Directory, relative to the app, that ``settings.py`` is located.
+* ``domain``: Domain where application should listen to 
 * ``DJANGO_APP_SETTINGS``: A list of key/value pairs that describe the build-specific application settings, and get exported in the ``build_settings.py`` file. This file will later be symlinked in the application's source code, and needs to be imported by the application's ``settings.py`` file.
    
             DJANGO_APP_SETTINGS:
@@ -24,6 +25,7 @@ This Ansible role builds and deploys a Django application in a virtualenv, with 
 * logrotate
 * Apache2
 * mod_wsgi 
+* Application contains a requirements.txt file     
 * Django application's settings.py needs to import the ``build_settings.py`` file    
 
 ### Example

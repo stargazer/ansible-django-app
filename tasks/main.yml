@@ -3,7 +3,7 @@
   file: path={{ item }}
         state=directory
   with_items:
-   - '{{ paths_app }}'
+   - '{{ project_root }}'
    - '{{ paths_virtualenv }}'
    - '{{ paths_log }}'
    - '{{ paths_src }}'
@@ -11,22 +11,22 @@
 
 - name: Clone {{ repo }}
   git: repo={{ repo }}
-       dest={{ paths_src }}/{{ app_name }}
+       dest={{ paths_app }}
        version={{ branch }}
        force=no
        accept_hostkey=yes
 
 - name: Install application (based on its requirements.txt)
-  pip: requirements={{ paths_src }}/{{ app_name }}/requirements.txt
-       virtualenv={{ virtualenv_path }}
+  pip: requirements={{ paths_app }}/requirements.txt
+       virtualenv={{ paths_virtualenv }}
        virtualenv_site_packages=no
-       chdir={{ paths_src }}/{{ app_name }}
+       chdir={{ paths_app }}
 
 - name: Generate a hash to use for creating unique deploy folders and urls for the static assets
   command: /bin/date +%d%m%Y-%s-%N
   register: hash
   
-- name: Create build-specific folders
+- name: Create build-specific folder structure
   file: path={{ item }} 
         state=directory
   with_items:
